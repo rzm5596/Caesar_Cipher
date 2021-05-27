@@ -1,7 +1,7 @@
 # Project:      Caesar Cipher Encrypter/Decrypter
 # Author:       Ryan Mayes
 # Date Started: 2021-5-25
-# Date Edited:  2021-5-26
+# Date Edited:  2021-5-27
 
 
 
@@ -74,11 +74,9 @@ def decrypt(message, shift):
         temp = int(shift / 26)
         shift = shift + (temp + 1) * 26
 
-    # Getting the shift of the function 
-    shift = shift % 26
-
-    # Creating a string for the new encrypted message
-    new_message = ""
+    shift = shift % 26 # Getting the shift of the function 
+    
+    new_message = "" # Creating a string for the new encrypted message
 
     # Going through each element in the message to encrypt it
     for i in message:
@@ -86,8 +84,7 @@ def decrypt(message, shift):
         # Checking for if it is apart of the alphabet
         if (i.isalpha()) == True:
 
-            # Adding the shift
-            shifted_i = ord(i) - shift
+            shifted_i = ord(i) - shift # Adding the shift
 
             # Since it is apart of the alphabet, first check whether it is a capital letter or not
             if (ord(i) < 91):
@@ -97,8 +94,7 @@ def decrypt(message, shift):
                 # Making sure the number isn't below the limit
                 if(shifted_i < 65):
 
-                    # Fixing it if it was below the limit
-                    shifted_i = shifted_i + 26
+                    shifted_i = shifted_i + 26 # Fixing it if it was below the limit
 
             else:
 
@@ -137,7 +133,7 @@ class Test(QWidget):
     def initUI(self):
 
         # Creating a label and text box for the key
-        self.shift = QLabel('Shift')
+        self.shift = QLabel('Key')
         self.shiftEdit = QLineEdit()
 
         # Creating a button and text box for the encryption
@@ -154,7 +150,7 @@ class Test(QWidget):
         grid = QGridLayout()
         grid.setSpacing(10)     
 
-        # Setting the widgets on the grid
+        # Placing the widgets on the grid
         grid.addWidget(self.shift, 1, 0)
         grid.addWidget(self.shiftEdit, 1, 1)
 
@@ -197,22 +193,35 @@ class Test(QWidget):
     # Defining a function for when the encrypt button is clicked
     def encryptClicked(self):
 
-        key = int(self.shiftEdit.text())            # Getting the key
-        message = self.encryptEdit.toPlainText()    # Getting the message
-        self.encryptEdit.setPlainText(message)      # Repopulating the message in the text box
-        cipherText = encrypt(message, key)          # Encrypting the message
-        self.decryptEdit.setPlainText(cipherText)   # Showing the cipher text
+        # Trying the key
+        try:
+            key = int(self.shiftEdit.text())            # Getting the key
+            message = self.encryptEdit.toPlainText()    # Getting the message
+            self.encryptEdit.setPlainText(message)      # Repopulating the message in the text box
+            cipherText = encrypt(message, key)          # Encrypting the message
+            self.decryptEdit.setPlainText(cipherText)   # Showing the cipher text
+
+        # If the key does not work, show an error message
+        except:
+            keyErrorMessage()
 
 
 
     # Defining a function for when the encrypt button is clicked
     def decryptClicked(self):
         
-        key = int(self.shiftEdit.text())            # Getting the key
-        cipherText = self.decryptEdit.toPlainText() # Getting the cipher text
-        self.decryptEdit.setPlainText(cipherText)   # Repopulating the cipher text in the text box
-        message = decrypt(cipherText, key)          # Decrypting the cipher text
-        self.encryptEdit.setPlainText(message)      # Showing the message
+        # Trying the key
+        try:
+            key = int(self.shiftEdit.text())            # Getting the key
+            cipherText = self.decryptEdit.toPlainText() # Getting the cipher text
+            self.decryptEdit.setPlainText(cipherText)   # Repopulating the cipher text in the text box
+            message = decrypt(cipherText, key)          # Decrypting the cipher text
+            self.encryptEdit.setPlainText(message)      # Showing the message
+
+        # If the key does not work, show an error message
+        except:
+            keyErrorMessage()
+
 
 
     # Defining a function for centering the window on the screen
@@ -222,6 +231,20 @@ class Test(QWidget):
         cp = QDesktopWidget().availableGeometry().center()  # Figuring out the center point of the monitor
         qr.moveCenter(cp)                                   # Moving the center of the rectangle to the center of the monitor
         self.move(qr.topLeft())                             # Moving the window to the top left of the rectangle
+
+
+
+# Function for sending an error message if the key was invalid
+def keyErrorMessage():
+
+    keyErrorMessage = QMessageBox()                                 # Creating the message box
+    keyErrorMessage.setIcon(QMessageBox.Warning)                    # Setting the icon of the box to a warning
+    keyErrorMessage.setText("Invalid key")                          # Setting the text of the box  
+    keyErrorMessage.setInformativeText('Keys need to be integers')  # Setting the info text of the box
+    keyErrorMessage.setWindowTitle("Invalid key")                   # Setting the title of the box
+    keyErrorMessage.setStyleSheet("QLabel{min-width: 100px;}")      # Setting the minimum width of the box
+    keyErrorMessage.exec_()                                         # Displaying the box
+
 
 
 # Defining the function for creating the window
@@ -241,4 +264,5 @@ def create_window():
 # Running the main function
 if __name__ == "__main__":
 
+    # Calling the main function
     create_window()
